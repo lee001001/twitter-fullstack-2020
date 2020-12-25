@@ -2,6 +2,8 @@ const express = require('express')
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
+const port = process.env.PORT || 3000
+
 const handlebars = require('express-handlebars') // 引入 handlebars
 const bodyParser = require('body-parser')
 const flash = require('connect-flash')
@@ -15,8 +17,6 @@ const cors = require('cors')
 
 
 const db = require('./models') // 引入資料庫
-const port = process.env.PORT || 3000
-
 const passport = require('./config/passport')
 
 app.use(cors())
