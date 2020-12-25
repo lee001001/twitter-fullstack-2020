@@ -14,10 +14,11 @@ const descriptionInput = document.querySelector('.descriptionInput')
 const home_descriptionCount = document.querySelector('.home-descriptionCount')
 const home_descriptionInput = document.querySelector('.home-descriptionInput')
 
-//字數統計
+
+// 字數統計
 function countWords(name, wordslimit) {
-  if (name === "name") {
-    let total = nameInput.value.length;
+  if (name === 'name') {
+    const total = nameInput.value.length
     return nameCount.innerHTML = `${total}/${wordslimit}`
   } else if (name === 'introduction') {
     const total = introductionInput.value.length
@@ -30,3 +31,4 @@ function countWords(name, wordslimit) {
     return home_descriptionCount.innerHTML = `${total}/${wordslimit}`
   }
 }
+
