@@ -1,5 +1,8 @@
+const express = require('express')
+const app = express()
+const http = require('http').createServer(app);
+const io = require('socket.io')(http)
 const db = require('../models')
-
 const { User, Like, Tweet, Reply } = db
 const helpers = require('../_helpers')
 const pageLimit = 10
@@ -157,6 +160,17 @@ const twitterController = {
         })
       // return res.redirect('back')
     })
+  },
+
+  getChat: (req, res) => {
+    io.on('connection', (socket) => {
+      socket.on('chat message', (msg) => {
+        console.log('message: ' + msg);
+        io.emit('chat message', msg);
+      });
+    });
+
+    return res.render('chatRoom')
   }
 }
 

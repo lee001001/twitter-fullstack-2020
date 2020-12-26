@@ -53,7 +53,6 @@ passport.deserializeUser((id, cb) => {
   })
 })
 
-JWT
 const jwt = require('jsonwebtoken')
 const passportJWT = require('passport-jwt')
 const ExtractJwt = passportJWT.ExtractJwt

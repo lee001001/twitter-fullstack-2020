@@ -66,4 +66,10 @@ router.post('/tweets/:id/replies', authenticatedUser, twitterController.postRepl
 router.post('/tweets/:id/like', authenticatedUser, twitterController.postTwitters_thumbs_up)
 router.post('/tweets/:id/unlike', authenticatedUser, twitterController.postTwitters_unlike)
 
+/// ////
+// chat
+/// ////
+router.get('/chat', authenticatedUser, twitterController.getChat)
+
+
 module.exports = router
