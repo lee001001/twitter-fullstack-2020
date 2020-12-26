@@ -47,6 +47,21 @@ app.use((req, res, next) => {
 require('./routes')(app)
 
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+const io = require('socket.io')(server)
+
+app.get('/chat', (req, res) => {
+  res.render('chatRoom')
+});
+
+
+io.on('connection', (client) => {
+  client.on('chat message', (msg) => {
+    console.log('message: ' + msg);
+    io.emit('chat message', msg);
+  });
+});
+
 
 module.exports = app

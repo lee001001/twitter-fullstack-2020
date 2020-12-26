@@ -160,18 +160,10 @@ const twitterController = {
         })
       // return res.redirect('back')
     })
-  },
-
-  getChat: (req, res) => {
-    io.on('connection', (socket) => {
-      socket.on('chat message', (msg) => {
-        console.log('message: ' + msg);
-        io.emit('chat message', msg);
-      });
-    });
-
-    return res.render('chatRoom')
   }
+
+
+
 }
 
 module.exports = twitterController

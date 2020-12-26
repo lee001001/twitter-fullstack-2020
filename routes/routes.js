@@ -69,7 +69,7 @@ router.post('/tweets/:id/unlike', authenticatedUser, twitterController.postTwitt
 /// ////
 // chat
 /// ////
-router.get('/chat', authenticatedUser, twitterController.getChat)
+
 
 
 module.exports = router
