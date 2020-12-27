@@ -39,33 +39,70 @@ $('#globalchat').submit(function (e) {
   const object = {
     type: $('#type').val(),
     body: {
-      type: "txt",
+      type: 'txt',
       msg: $('#m').val()
     },
     fromId: $('#id').val(),
     toId: $('#toId').val(),
     name: $('#name').val(),
-    avatar: $('#avatar').val(),
+    avatar: $('#avatar').val()
   }
   socket.emit('chat message', object);
+
   $('#m').val('');
+
+  if (object.toId !== "") {
+    socket.emit('push_to_other', object);
+  }
   return false;
 });
+
 //保存訊息在頁面上
 socket.on('chat message', function (object) {
+  console.log(object)
   msg = object.body.msg
 
   // $('#messages').append($('<li>').text(msg));
   $('#messages').append(`<div class="d-flex justify-content-end">
-        <li class="user mb-2 " style="list-style-type:none">
-          <div class="comment">
-            <div class="p-3 text-end" style="color:white; background-color:#FF6103; border-radius:8px">
-              ${msg}</div>
-          </div>
-          <div class="time text-end" style="color:#808A87"></div>
-        </li>
-      </div>`);
+          <li class="user mb-2 " style="list-style-type:none">
+            <div class="comment">
+              <div class="p-3 text-end" style="color:white; background-color:#FF6103; border-radius:8px">
+                ${msg}</div>
+            </div>
+            <div class="time text-end" style="color:#808A87"></div>
+          </li>
+        </div>`);
 
+
+  // $('#messages').append(`
+  // {{#ifcond ${object.fromId} "===" user.id}}
+  //       <div class="d-flex justify-content-end">
+  //         <li class="user mb-2 " style="list-style-type:none">
+  //           <div class="comment">
+  //             <div class="p-3 text-end" style=" color:white; background-color:#FF6103; border-radius:8px">
+  //               ${msg}</div>
+  //           </div>
+  //           <div class="time text-end small" style="color:#808A87">
+  //           </div>
+  //         </li>
+  //       </div>
+
+  //       {{else}}
+  //       <li class="nonUser mb-2" style="list-style-type:none">
+  //         <div class="avatar-comment d-flex align-items-end">
+  //           <img class="avatar me-2" src="{{this.fromId.dataValues.avatar}}" alt=""
+  //             style="width: 50px; height:50px ; border-radius: 50%;background-color:#C4C4C4">
+
+  //           <div class="p-3" style=" background-color:#f2f3f5; border-radius:8px">
+  //             <span> ${msg}</span>
+  //           </div>
+  //         </div>
+  //         <div class="time ms-5 mt-0">
+  //           <span class="ms-1 ps-2 mt-0 text-start small" style="color:#808A87"></span>
+
+  //         </div>
+  //       </li>
+  //       {{/ifcond}}`);
   // $('#messages').append(`<li><img src="${object.avatar}" alt="" style="width: 50px; height:50px">${msg}</li>`);
 });
 
@@ -75,3 +112,15 @@ $(document).ready
       $("#chat-message").scrollTop($(document).height() + 0);
     }
   );
+if (($('#id').val() === object.fromId && $('#toId').val() === object.toId) || ($('#id').val() === object.toId && $('#toId').val() === object.fromId) || object.toId === "") {
+  $('#messages').append(`<li><img src="${object.avatar}" alt="" style="width: 50px; height:50px">${msg}</li>`);
+}
+
+
+socket.on('push_to_other', function (obj, messages) {
+  if (obj.toId === $('#global_userId').val()) {
+    $('#messages').append("激發新對話框")
+  }
+});
+
+

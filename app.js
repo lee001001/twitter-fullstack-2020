@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 const flash = require('connect-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
-const helpers = require('./_helpers');
+const helpers = require('./_helpers')
 const app = express()
 const axios = require('axios')
 const cors = require('cors')
@@ -45,9 +45,7 @@ app.use((req, res, next) => {
   next()
 })
 
-
 require('./routes')(app)
-
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 const io = require('socket.io')(server)
@@ -55,7 +53,7 @@ const { Message, User } = db
 
 io.on('connection', (socket) => {
   socket.on('open', (msg) => {
-    console.log('user connected');
+    console.log('user connected')
     if (userinfo) {
       socket['UserId'] = userinfo.id
       console.log()
@@ -63,7 +61,6 @@ io.on('connection', (socket) => {
         where: { login: true }
       })
         .then(users => {
-          console.log("users N=", users.length)
           io.emit('update_loginUsers', users);
         })
     }
@@ -77,16 +74,77 @@ io.on('connection', (socket) => {
       ToId: Number(msg.toId)
     })
     io.emit('chat message', msg);
+
+    // if (Number(msg.toId) !== 0) {
+    //   const names = [msg.fromId, msg.toId].sort()
+    //   const roomName = names[0] + names[1]
+    //   io.emit("get_room", roomName, msg);
+    // }
   });
+
+  socket.on('push_to_other', (obj) => {
+    const fromId = Number(obj.fromId) //A
+    const toId = Number(obj.toId) //B
+    Message.findAll({
+      where: { type: "0", ToId: toId }
+    })
+      .then(messages => {
+        console.log("messagesN=", messages.length)
+        User.findAll()
+          .then(users => {
+            let msgs = []
+            for (let user of users) {
+              let msg = messages.filter(message => message.FromId === user.dataValues.id)
+              if (Number(fromId) === Number(user.dataValues.id)) {
+                msg = [{
+                  dataValues: {
+                    type: obj.type,
+                    body: obj.body,
+                    FromId: Number(obj.fromId),
+                    ToId: Number(obj.toId),
+                    createAt: new Date(),
+                    updatedAt: new Date()
+                  }
+                }]
+              }
+
+              if (msg.length > 1) {
+                msg = msg.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)[0].dataValues
+              } else {
+                if (msg[0]) {
+                  msg = msg[0].dataValues
+                } else {
+                  msg = msg[0]
+                }
+              }
+              if (msg) {
+                msg.avatar_From_ToId = user.dataValues.avatar
+                msg.name_From_ToId = user.dataValues.name
+                msg.email_From_ToId = user.dataValues.email
+                msgs.push(msg)
+              }
+            }
+            console.log(msgs)
+            io.emit('push_to_other', obj, msgs);
+          })
+      })
+
+
+    // io.emit('push_to_other', msg, roomName);
+
+  })
+
 
   socket.on('disconnect', function () {
     console.log('user disconnected');
-    User.findByPk(socket['UserId'])
-      .then(user => {
-        user.update({
-          login: false
+    if (socket['UserId']) {
+      User.findByPk(socket['UserId'])
+        .then(user => {
+          user.update({
+            login: false
+          })
         })
-      })
+    }
   });
 });
 
