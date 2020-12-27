@@ -52,7 +52,7 @@ const io = require('socket.io')(server)
 const { Message, User } = db
 
 io.on('connection', (socket) => {
-  socket.on('open', (msg) => {
+  socket.on('open', () => {
     console.log('user connected')
     if (userinfo) {
       socket['UserId'] = userinfo.id
@@ -61,6 +61,8 @@ io.on('connection', (socket) => {
         where: { login: true }
       })
         .then(users => {
+          console.log(`------------`)
+          console.log(`${users}`)
           io.emit('update_loginUsers', users);
         })
     }
