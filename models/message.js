@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Message = sequelize.define('Message', {
     type: DataTypes.STRING,
-    body: DataTypes.JSON,
+    body: DataTypes.STRING,
     FromId: DataTypes.INTEGER,
     ToId: DataTypes.INTEGER
   }, {})

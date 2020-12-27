@@ -96,7 +96,7 @@ io.on('connection', (socket) => {
                 msg = [{
                   dataValues: {
                     type: obj.type,
-                    body: obj.body,
+                    body: String(obj.body),
                     FromId: Number(obj.fromId),
                     ToId: Number(obj.toId),
                     createAt: new Date(),

@@ -49,10 +49,7 @@ $('#globalchat').submit(function (e) {
   e.preventDefault(); // prevents page reloading
   const object = {
     type: $('#type').val(),
-    body: {
-      type: 'txt',
-      msg: $('#m').val()
-    },
+    body: $('#m').val(),
     fromId: $('#id').val(),
     toId: $('#toId').val(),
     name: $('#name').val(),
@@ -79,7 +76,7 @@ $('#globalchat').submit(function (e) {
 
 //保存訊息在頁面上
 socket.on('chat message', function (object) {
-  msg = object.body.msg
+  msg = object.body
   if (($('#id').val() === object.fromId && $('#toId').val() === object.toId) || ($('#id').val() === object.toId && $('#toId').val() === object.fromId) || object.toId === "") {
     // $('#messages').append($('<li>').text(msg));
     $('#messages').append(`<div class="d-flex justify-content-end">
@@ -113,7 +110,7 @@ socket.on('push_to_other', function (obj, messages) {
             </h6>
           </div>
           <div class="row mx-0 px-0">
-            ${this.dataValues.body.msg}
+            ${this.dataValues.body}
           </div>
         </a>
       </div>`;
