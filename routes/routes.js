@@ -4,6 +4,7 @@ const router = express.Router()
 const adminController = require('../controllers/adminController.js')
 const userController = require('../controllers/userController.js')
 const twitterController = require('../controllers/twitterController.js')
+const chatController = require('../controllers/chatController.js')
 
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
@@ -26,8 +27,7 @@ router.get('/admin/users', authenticatedAdmin, adminController.getUsers)
 /// ////
 // User
 /// ////
-// router.get('/', (req, res) => res.redirect('/tweets'))
-router.get('/', (req, res) => res.render('chat'))
+router.get('/', (req, res) => res.redirect('/tweets'))
 router.get('/signup', beSigned, userController.signUpPage)
 router.post('/signup', beSigned, userController.signUp)
 router.get('/signin', beSigned, userController.signInPage)
@@ -70,7 +70,7 @@ router.post('/tweets/:id/unlike', authenticatedUser, twitterController.postTwitt
 /// ////
 // chat
 /// ////
-
+router.get('/globalChat', authenticatedUser, chatController.getGlobalChat)
 
 
 module.exports = router
