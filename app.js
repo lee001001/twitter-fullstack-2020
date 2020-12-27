@@ -60,13 +60,13 @@ io.on('connection', (socket) => {
         where: { login: true }
       })
         .then(users => {
+          console.log("users.length=", users.length)
           io.emit('update_loginUsers', users);
         })
     }
   })
 
   socket.on('chat message', (msg) => {
-    console.log(msg)
     Message.create({
       type: msg.type,
       body: msg.body,
@@ -89,7 +89,6 @@ io.on('connection', (socket) => {
       where: { type: "0", ToId: toId }
     })
       .then(messages => {
-        console.log("messagesN=", messages.length)
         User.findAll()
           .then(users => {
             let msgs = []
@@ -137,7 +136,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', function () {
     console.log('user disconnected');
-    if (socket['UserId']) {
+    if (!userinfo && socket['UserId']) {
       User.findByPk(socket['UserId'])
         .then(user => {
           user.update({

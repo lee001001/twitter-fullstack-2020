@@ -22,14 +22,10 @@ const chatController = {
     if (talkers.length > 1) {
       talkers = talkers.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)
     }
-
     let onlineUsers = await User.findAll({ where: { login: true } })
-    console.log(onlineUsers)
-
 
     res.render('globalChat', { OpenChat: true, talkers, onlineUsers })
-  }
-  ,
+  },
 
   //////////////
   //Private

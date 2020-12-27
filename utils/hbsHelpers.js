@@ -38,7 +38,7 @@ module.exports = {
   },
 
   time: function (a) {
-    return moment(a).format("h:mm a")
+    return a.toLocaleTimeString()
   },
 
   tc: function (a) {
