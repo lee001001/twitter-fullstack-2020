@@ -1,20 +1,21 @@
 <div class="row" style="height:100vh">
-  <div id="global_loginuser" class="col-4" style="border-right: 1px solid #C0C0C0">
+  <div class="col-4" style="border-right: 1px solid #C0C0C0">
     <div class="row my-0 py-3" style="border-bottom: 1px solid #C0C0C0">
-      <h5>上線使用者 (5)</h6>
+      <h5>上線使用者 ({{onlineUsers.length}})</h6>
     </div>
-    <div class="row my-0 py-3" style="border-bottom: 1px solid #C0C0C0">
-
-      <div class="d-flex mx-auto">
-        <a class="mx-2" href="/user/{{user.id}}">
-          <img src="{{user.avatar}}" alt="" style="height: 40px; width: 40px; border-radius: 50%;">
+    <div id="global_loginuser" class="row my-0 py-3">
+      {{#each onlineUsers}}
+      <div class="d-flex mx-auto mb-2" style="border-bottom: 1px solid #C0C0C0">
+        <a class="mx-2" href="/user/{{this.dataValues.id}}" style="display:contents">
+          <img src="{{this.dataValues.avatar}}" alt="" style="height: 40px; width: 40px; border-radius: 50%;">
         </a>
-        <h6 class="fw-bolder" style="margin:0;">{{user.name}}</h6>
-        <h6 style="margin:0; color:#A39480;">{{user.email}}</h6>
+        <h6 class="fw-bolder" style="margin:0;">{{this.dataValues.name}}</h6>
+        <span class="small" style="margin:0;color:#808A87">@{{this.dataValues.account}}</span>
       </div>
+      {{/each}}
     </div>
   </div>
-  <div class="col-8">
+  <div class=" col-8">
     <div class="row my-0 py-3" style="border-bottom: 1px solid #C0C0C0">
       <h5>公開聊天室</h6>
     </div>
