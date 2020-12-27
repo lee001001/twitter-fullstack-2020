@@ -78,6 +78,7 @@ $('#globalchat').submit(function (e) {
 socket.on('chat message', function (object) {
   msg = object.body.msg
   time = new Date().toLocaleTimeString()
+
   // $('#messages').scrollTop = $('#messages').scrollHeight
   $('#messages').append(`
   <div class="d-flex justify-content-end">
