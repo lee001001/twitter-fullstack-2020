@@ -35,11 +35,13 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 
+let userinfo = null
 // flash words in global
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
   res.locals.user = req.user
+  userinfo = req.user
   next()
 })
 
@@ -49,11 +51,22 @@ require('./routes')(app)
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 const io = require('socket.io')(server)
-const { Message } = db
-
-
+const { Message, User } = db
 
 io.on('connection', (socket) => {
+  socket.on('open', (msg) => {
+    console.log('user connected');
+    if (userinfo) {
+      socket['UserId'] = userinfo.id
+      User.findAll({
+        where: { login: true }
+      })
+        .then(users => {
+          console.log("users N=", users.length)
+          io.emit('update_loginUsers', users);
+        })
+    }
+  })
   socket.on('chat message', (msg) => {
     Message.create({
       type: msg.type,
@@ -64,28 +77,17 @@ io.on('connection', (socket) => {
     io.emit('chat message', msg);
   });
 
+  socket.on('disconnect', function () {
+    console.log('user disconnected');
+    User.findByPk(socket['UserId'])
+      .then(user => {
+        user.update({
+          login: false
+        })
+      })
+  });
 });
 
-
-
-
-
-
-// const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
-// const io = require('socket.io')(server)
-
-// app.get('/chat', (req, res) => {
-//   res.render('chatRoom')
-// });
-
-
-// io.on('connection', (client) => {
-//   client.on('chat message', (msg) => {
-//     console.log('message: ' + msg);
-//     io.emit('chat message', msg);
-//   });
-// });
 
 
 module.exports = app
