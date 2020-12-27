@@ -46,22 +46,46 @@ app.use((req, res, next) => {
 
 require('./routes')(app)
 
-
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 const io = require('socket.io')(server)
-
-app.get('/chat', (req, res) => {
-  res.render('chatRoom')
-});
+const { Message } = db
 
 
-io.on('connection', (client) => {
-  client.on('chat message', (msg) => {
-    console.log('message: ' + msg);
+
+io.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
+    Message.create({
+      type: msg.type,
+      body: msg.body,
+      fromId: Number(msg.fromId),
+      toId: Number(msg.toId)
+    })
     io.emit('chat message', msg);
   });
+
 });
+
+
+
+
+
+
+// const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+// const io = require('socket.io')(server)
+
+// app.get('/chat', (req, res) => {
+//   res.render('chatRoom')
+// });
+
+
+// io.on('connection', (client) => {
+//   client.on('chat message', (msg) => {
+//     console.log('message: ' + msg);
+//     io.emit('chat message', msg);
+//   });
+// });
 
 
 module.exports = app
