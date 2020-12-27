@@ -52,21 +52,19 @@ const io = require('socket.io')(server)
 const { Message, User } = db
 
 io.on('connection', (socket) => {
-  socket.on('open', () => {
+  socket.on('open', (msg) => {
     console.log('user connected')
     if (userinfo) {
-      socket['UserId'] = userinfo.id
-      console.log()
+      socket.UserId = userinfo.id
       User.findAll({
         where: { login: true }
       })
         .then(users => {
-          console.log(`------------`)
-          console.log(`${users}`)
           io.emit('update_loginUsers', users);
         })
     }
   })
+
   socket.on('chat message', (msg) => {
     console.log(msg)
     Message.create({

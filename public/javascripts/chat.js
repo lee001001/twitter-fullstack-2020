@@ -2,7 +2,8 @@
 
 
 var socket = io();
-socket.emit('open', "update loginTime");
+// socket.emit('open', "update loginTime");
+socket.emit('open', "");
 
 //更新目前線上使用者
 socket.on('update_loginUsers', function (object) {
@@ -63,7 +64,8 @@ socket.on('chat message', function (object) {
   msg = object.body.msg
 
   // $('#messages').append($('<li>').text(msg));
-  $('#messages').append(`<div class="d-flex justify-content-end">
+  $('#messages').append(`
+  {{#if ${object.fromId}}}<div class="d-flex justify-content-end">
           <li class="user mb-2 " style="list-style-type:none">
             <div class="comment">
               <div class="p-3 text-end" style="color:white; background-color:#FF6103; border-radius:8px">
@@ -71,7 +73,18 @@ socket.on('chat message', function (object) {
             </div>
             <div class="time text-end" style="color:#808A87"></div>
           </li>
-        </div>`);
+        </div> {{else}}
+        div class="d-flex justify-content-end">
+          <li class="user mb-2 " style="list-style-type:none">
+            <div class="comment">
+              <div class="p-3 text-end" style="color:black; background-color:#FF6103; border-radius:8px">
+                ${msg}</div>
+            </div>
+            <div class="time text-end" style="color:#808A87"></div>
+          </li>
+        </div>
+        {{/if}}
+        `);
 
 
   // $('#messages').append(`
