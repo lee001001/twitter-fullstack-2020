@@ -55,7 +55,7 @@ $('#globalchat').submit(function (e) {
 socket.on('chat message', function (object) {
   msg = object.body.msg
   // $('#messages').append($('<li>').text(msg));
-  $('#messages').append(`<li class="text-end" style="background-color:#FF6103 ;list-style-type:none;border-radius:5px;display:inline-block">${msg}</li>`);
+  $('#messages').append(`<li class="text-end" style="background-color:#FF6103; list-style-type:none; border-radius:5px">${msg}</li>`);
   // $('#messages').append(`<li><img src="${object.avatar}" alt="" style="width: 50px; height:50px">${msg}</li>`);
 });
 

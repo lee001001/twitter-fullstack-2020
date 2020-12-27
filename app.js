@@ -58,6 +58,7 @@ io.on('connection', (socket) => {
     console.log('user connected');
     if (userinfo) {
       socket['UserId'] = userinfo.id
+      console.log()
       User.findAll({
         where: { login: true }
       })
@@ -68,6 +69,7 @@ io.on('connection', (socket) => {
     }
   })
   socket.on('chat message', (msg) => {
+    console.log(msg)
     Message.create({
       type: msg.type,
       body: msg.body,
