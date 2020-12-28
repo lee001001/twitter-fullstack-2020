@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       body: {
-        type: Sequelize.JSON
+        type: Sequelize.STRING
       },
       FromId: {
         type: Sequelize.INTEGER

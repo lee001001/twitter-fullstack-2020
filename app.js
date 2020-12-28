@@ -1,9 +1,4 @@
 const express = require('express')
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
-const port = process.env.PORT || 3000
-
 const handlebars = require('express-handlebars') // 引入 handlebars
 const bodyParser = require('body-parser')
 const flash = require('connect-flash')
@@ -14,9 +9,13 @@ const app = express()
 const axios = require('axios')
 const cors = require('cors')
 
-
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 const db = require('./models') // 引入資料庫
+const port = process.env.PORT || 3000
+
 const passport = require('./config/passport')
 
 app.use(cors())
@@ -65,8 +64,8 @@ io.on('connection', (socket) => {
         })
     }
   })
-
   socket.on('chat message', (msg) => {
+    console.log('%%%%%%%%%%%%%%%%')
     Message.create({
       type: msg.type,
       body: msg.body,
@@ -98,7 +97,7 @@ io.on('connection', (socket) => {
                 msg = [{
                   dataValues: {
                     type: obj.type,
-                    body: obj.body,
+                    body: String(obj.body),
                     FromId: Number(obj.fromId),
                     ToId: Number(obj.toId),
                     createAt: new Date(),
@@ -117,13 +116,14 @@ io.on('connection', (socket) => {
                 }
               }
               if (msg) {
+                msg.id_From_ToId = user.dataValues.id
                 msg.avatar_From_ToId = user.dataValues.avatar
                 msg.name_From_ToId = user.dataValues.name
-                msg.email_From_ToId = user.dataValues.email
+                msg.account_From_ToId = user.dataValues.account
                 msgs.push(msg)
               }
             }
-            console.log(msgs)
+            msgs = msgs.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)
             io.emit('push_to_other', obj, msgs);
           })
       })
@@ -146,7 +146,6 @@ io.on('connection', (socket) => {
     }
   });
 });
-
 
 
 module.exports = app

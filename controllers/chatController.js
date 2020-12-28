@@ -23,6 +23,7 @@ const chatController = {
       talkers = talkers.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)
     }
     let onlineUsers = await User.findAll({ where: { login: true } })
+    console.log(talkers)
 
     res.render('globalChat', { OpenChat: true, talkers, onlineUsers })
   },
