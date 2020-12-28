@@ -60,6 +60,7 @@ $('#globalchat').submit(function (e) {
   $('#m').val('');
 
   if (object.toId !== "") {
+    socket.emit('push_to_self', object);
     socket.emit('push_to_other', object);
   }
   return false;
@@ -109,31 +110,54 @@ socket.on('chat message', function (object) {
 
 
 
-socket.on('push_to_other', function (obj, messages) {
-  if (obj.toId === $('#global_userId').val()) {
+socket.on('push_to_other', function (obj, toId_msgs, fromId_msgs) {
+
+  if (Number(obj.toId) === Number($('#global_userId').val())) {
+    $('#latestNew').empty().append($('#global_userId').val() + " " + obj.toId + " " + obj.fromId);
     let text = "";
-    for (let msg of messages) {
+    for (let msg of toId_msgs) {
       text = text + `
       <div class="d-flex mx-auto mb-2" style="border-bottom: 1px solid #C0C0C0">
-        <a class="mx-2" href="/user/${this.id_From_ToId}" style="display:contents">
-          <img src="${this.avatar_From_ToId}" alt="" style="height: 40px; width: 40px; border-radius: 50%;">
+        <a class="mx-2" href="/user/${msg.id_From_ToId}" style="display:contents">
+          <img src="${msg.avatar_From_ToId}" alt="" style="height: 40px; width: 40px; border-radius: 50%;">
         </a>
-        <a href="/privateChat/${this.id_From_ToId}" class="nav-link" style="color:black;">
+        <a href="/privateChat/${msg.id_From_ToId}/with" class="nav-link" style="color:black;">
           <div class="row d-flex mx-0 px-0">
-            <h6 class="fw-bolder mx-0 px-0" style="margin:0;">
-              ${this.name_From_ToId}
-              <span class="small" style="margin:0;color:#808A87">@${this.account_From_ToId}</span>
-            </h6>
+            <h6 class="fw-bolder mx-0 px-0" style="margin:0;">${msg.name_From_ToId}<span class="small" style="margin:0;color:#808A87">@${msg.account_From_ToId}</span></h6>
           </div>
           <div class="row mx-0 px-0">
-            ${this.dataValues.body}
+            ${msg.body}
           </div>
         </a>
       </div>`;
-    }
+    };
     $('#latestNew').empty().append(text);
     // $('#latestNew').append("激發新對話框")
   }
 });
 
+socket.on('push_to_self', function (obj, toId_msgs, fromId_msgs) {
 
+  if (Number(obj.fromId) === Number($('#global_userId').val())) {
+    $('#latestNew').empty().append($('#global_userId').val() + " " + obj.toId + " " + obj.fromId);
+    let text = "";
+    for (let msg of toId_msgs) {
+      text = text + `
+      <div class="d-flex mx-auto mb-2" style="border-bottom: 1px solid #C0C0C0">
+        <a class="mx-2" href="/user/${msg.id_From_ToId}" style="display:contents">
+          <img src="${msg.avatar_From_ToId}" alt="" style="height: 40px; width: 40px; border-radius: 50%;">
+        </a>
+        <a href="/privateChat/${msg.id_From_ToId}/with" class="nav-link" style="color:black;">
+          <div class="row d-flex mx-0 px-0">
+            <h6 class="fw-bolder mx-0 px-0" style="margin:0;">${msg.name_From_ToId}<span class="small" style="margin:0;color:#808A87">@${msg.account_From_ToId}</span></h6>
+          </div>
+          <div class="row mx-0 px-0">
+            ${msg.body}
+          </div>
+        </a>
+      </div>`;
+    };
+    $('#latestNew').empty().append(text);
+    // $('#latestNew').append("激發新對話框")
+  }
+});

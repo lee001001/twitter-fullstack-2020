@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
           .then(users => {
             let msgs = []
             for (let user of users) {
-              let msg = messages.filter(message => message.FromId === user.dataValues.id)
+              let msg = messages.filter(message => message.ToId === user.dataValues.id)
               if (Number(fromId) === Number(user.dataValues.id)) {
                 msg = [{
                   dataValues: {
@@ -106,7 +106,7 @@ io.on('connection', (socket) => {
               }
 
               if (msg.length > 1) {
-                msg = msg.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)[0].dataValues
+                msg = msg.sort((a, b) => b.dataValues.updatedAt - a.dataValues.updatedAt)[0].dataValues
               } else {
                 if (msg[0]) {
                   msg = msg[0].dataValues
@@ -122,16 +122,60 @@ io.on('connection', (socket) => {
                 msgs.push(msg)
               }
             }
-            msgs = msgs.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)
+            msgs = msgs.sort((a, b) => b.updatedAt - a.updatedAt)
             io.emit('push_to_other', obj, msgs);
           })
       })
-
-
-    // io.emit('push_to_other', msg, roomName);
-
   })
 
+  socket.on('push_to_self', (obj) => {
+    const fromId = Number(obj.fromId) //A
+    const toId = Number(obj.toId) //B
+
+    Message.findAll({
+      where: { type: "0", FromId: fromId }
+    })
+      .then(messages => {
+        User.findAll()
+          .then(users => {
+            let msgs = []
+            for (let user of users) {
+              let msg = messages.filter(message => message.FromId === user.dataValues.id)
+              if (Number(toId) === Number(user.dataValues.id)) {
+                msg = [{
+                  dataValues: {
+                    type: obj.type,
+                    body: String(obj.body),
+                    FromId: Number(obj.fromId),
+                    ToId: Number(obj.toId),
+                    createAt: new Date(),
+                    updatedAt: new Date()
+                  }
+                }]
+              }
+
+              if (msg.length > 1) {
+                msg = msg.sort((a, b) => b.dataValues.updatedAt - a.dataValues.updatedAt)[0].dataValues
+              } else {
+                if (msg[0]) {
+                  msg = msg[0].dataValues
+                } else {
+                  msg = msg[0]
+                }
+              }
+              if (msg) {
+                msg.id_From_ToId = user.dataValues.id
+                msg.avatar_From_ToId = user.dataValues.avatar
+                msg.name_From_ToId = user.dataValues.name
+                msg.account_From_ToId = user.dataValues.account
+                msgs.push(msg)
+              }
+            }
+            msgs = msgs.sort((a, b) => b.updatedAt - a.updatedAt)
+            io.emit('push_to_self', obj, msgs);
+          })
+      })
+  })
 
   socket.on('disconnect', function () {
     console.log('user disconnected');

@@ -59,7 +59,7 @@ const chatController = {
     for (let user of messager) {
       let otherId = Number(user.dataValues.id)
       let talker = talkers.filter(msg => (Number(msg.dataValues.FromId) === userId && Number(msg.dataValues.ToId) === otherId) || (Number(msg.dataValues.FromId) === otherId && Number(msg.dataValues.ToId) === userId))
-      talker = talker.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)[0]
+      talker = talker.sort((a, b) => b.dataValues.updatedAt - a.dataValues.updatedAt)[0]
       if (talker) {
         talker.id_From_ToId = user.dataValues.id
         talker.avatar_From_ToId = user.dataValues.avatar
@@ -68,11 +68,14 @@ const chatController = {
         latestNew.push(talker)
       }
     }
-    latestNew = latestNew.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)
+    latestNew = latestNew.sort((a, b) => b.dataValues.updatedAt - a.dataValues.updatedAt)
     res.render('privateChat', { OpenChat: true, ChatwithP: false, talkers, latestNew })
   },
 
   getPrivateChat_with: async (req, res) => {
+    if (Number(helpers.getUser(req).id) === Number(req.params.id)) {
+      return res.redirect(`/privateChat`)
+    }
     let talkers = await Message.findAll({
       where: {
         type: "0",
@@ -101,7 +104,7 @@ const chatController = {
     for (let user of messager) {
       let otherId = Number(user.dataValues.id)
       let talker = talkers.filter(msg => (Number(msg.dataValues.FromId) === userId && Number(msg.dataValues.ToId) === otherId) || (Number(msg.dataValues.FromId) === otherId && Number(msg.dataValues.ToId) === userId))
-      talker = talker.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)[0]
+      talker = talker.sort((a, b) => b.dataValues.updatedAt - a.dataValues.updatedAt)[0]
       if (talker) {
         talker.id_From_ToId = user.dataValues.id
         talker.avatar_From_ToId = user.dataValues.avatar
@@ -110,7 +113,7 @@ const chatController = {
         latestNew.push(talker)
       }
     }
-    latestNew = latestNew.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)
+    latestNew = latestNew.sort((a, b) => b.dataValues.updatedAt - a.dataValues.updatedAt)
 
     userId_1 = helpers.getUser(req).id
     userId_2 = req.params.id
