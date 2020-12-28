@@ -7,11 +7,11 @@ socket.on('update_loginUsers', function (object) {
   let text = "";
   for (let obj of object) {
     text = text + `
-    <div class="d-flex mx-auto my-2" style="border-bottom: 1px solid #C0C0C0">
-      <a class="mx-2" href="/user/${obj.id}" style="display:contents">
-        <img src="${obj.avatar}" alt="" style="height: 40px; width: 40px; border-radius: 50%;">
+    <div class="onelineUser d-flex mx-auto p-2 align-items-center" style="border-bottom: 1px solid #C0C0C0">
+      <a href="/user/${obj.id}" style="display:contents">
+        <img src="${obj.avatar}" alt="" class="me-2 "style="height: 40px; width: 40px; border-radius: 50%;">
       </a>
-      <h6 class="fw-bolder" style="margin:0;">${obj.name}</h6>
+      <h6 class="fw-bolder me-2" style="margin:0;">${obj.name}</h6>
       <span class="small" style="margin:0;color:#808A87">@${obj.account}</span>
     </div>`;
   }
