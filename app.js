@@ -91,7 +91,8 @@ io.on('connection', (socket) => {
           .then(users => {
             let msgs = []
             for (let user of users) {
-              let msg = messages.filter(message => message.ToId === user.dataValues.id)
+              if (Number(toId) === Number(user.dataValues.id)) continue
+              let msg = messages.filter(message => (message.FromId === user.dataValues.id || message.ToId === user.dataValues.id))
               if (Number(fromId) === Number(user.dataValues.id)) {
                 msg = [{
                   dataValues: {
@@ -140,7 +141,8 @@ io.on('connection', (socket) => {
           .then(users => {
             let msgs = []
             for (let user of users) {
-              let msg = messages.filter(message => message.FromId === user.dataValues.id)
+              if (Number(fromId) === Number(user.dataValues.id)) continue
+              let msg = messages.filter(message => (message.FromId === user.dataValues.id || message.ToId === user.dataValues.id))
               if (Number(toId) === Number(user.dataValues.id)) {
                 msg = [{
                   dataValues: {
