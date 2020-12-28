@@ -78,7 +78,7 @@ $('#globalchat').submit(function (e) {
 //保存訊息在頁面上
 socket.on('chat message', function (object) {
   msg = object.body
-  if (($('#id').val() === object.fromId && $('#toId').val() === object.toId) || ($('#id').val() === object.toId && $('#toId').val() === object.fromId) || object.toId === "") {
+  if (($('#id').val() === object.fromId && $('#toId').val() === object.toId) || ($('#id').val() === object.toId && $('#toId').val() === object.fromId) || ($('#global_userId').val() === object.fromId && object.toId === "")) {
     // $('#messages').append($('<li>').text(msg));
     $('#messages').append(`<div class="d-flex justify-content-end">　
             <li class="user mb-2 " style="list-style-type:none">
@@ -106,6 +106,22 @@ socket.on('chat message', function (object) {
             </div>
           </li>`);
   }
+  if ($('#global_userId').val() !== object.fromId && object.toId === "") {
+    $('#messages').append(`<li class="nonUser mb-2" style="list-style-type:none">
+            <div class="avatar-comment d-flex align-items-end">
+              <img class="avatar me-2" src="${object.avatar}" alt=""
+                style="width: 50px; height:50px ; border-radius: 50%;background-color:#C4C4C4">
+
+              <div class="p-3" style=" background-color:#f2f3f5; border-radius:8px">
+                <span>${msg}</span>
+              </div>
+            </div>
+            <div class="time ms-5 mt-0">
+              <span class="ms-1 ps-2 mt-0 text-start small" style="color:#808A87"></span>
+            </div>
+          </li>`);
+  }
+
 });
 
 
