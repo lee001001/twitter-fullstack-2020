@@ -58,6 +58,11 @@ $('#globalchat').submit(function (e) {
 
   $('#m').val('');
 
+  $(document).ready(function () {
+    $('.message').scrollTop($('#scroll_div')[0].scrollHeight);
+  });
+
+
   if (object.toId !== "") {
     socket.emit('push_to_other', object);
   }
@@ -78,8 +83,10 @@ socket.on('chat message', function (object) {
   msg = object.body
   time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
   if (($('#id').val() === object.fromId && $('#toId').val() === object.toId) || ($('#id').val() === object.toId && $('#toId').val() === object.fromId) || object.toId === "") {
-    // $('#messages').append($('<li>').text(msg));
-    $('#messages').append(`<div class="d-flex justify-content-end">
+    let message = document.getElementById('messages');
+    const div = document.createElement('div')
+    message.appendChild(div)
+    div.innerHTML = `<div class="d-flex justify-content-end">
             <li class="user mb-2 " style="list-style-type:none">
               <div class="comment">
                 <div class="p-3 text-end" style="color:white; background-color:#FF6103; border-radius:8px">
@@ -87,7 +94,9 @@ socket.on('chat message', function (object) {
               </div>
               <div class="time text-end small" style="color:#808A87">${time}</div>
             </li>
-          </div>`);
+          </div>`
+    message.appendChild(div)
+    div.scrollIntoView(false)
   }
 });
 
@@ -119,4 +128,12 @@ socket.on('push_to_other', function (obj, messages) {
     // $('#latestNew').append("激發新對話框")
   }
 });
+
+$(window).scroll(function () {
+  last = $("body").height() - $(window).height()
+  if ($(window).scrollTop() >= last) {
+    $(".down").hide()
+  }
+})
+
 

@@ -20,8 +20,8 @@
       <h5>公開聊天室</h6>
     </div>
     <div class="information d-flex flex-column justify-content-between py-2">
-      <div class=" message" id="chat-message" style="max-height:80vh; overflow-y: auto; overflow-x: hidden ;">
-        <ul id="messages">
+      <div class="message" id="chat-message" style="height:80vh; overflow-y:scroll; overflow-x: hidden ;">
+        <ul id="messages" class="d-flex flex-column justify-content-end">
           {{#each talkers}}
 
           {{#ifcond this.fromId.dataValues.id "===" ../user.id}}
