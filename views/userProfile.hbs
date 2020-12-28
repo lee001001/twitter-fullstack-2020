@@ -40,13 +40,21 @@
 
                 {{#if isFollowed}}
                 <form action="/user/followship/{{profileUser.id}}?_method=DELETE" method="POST">
-                    <button class="btn btn-lg btn-block fw-bolder mt-2" type="submit"
-                        style="color:white; background-color:#FF6103; border-radius: 25px; border: 1px solid white; width:150px; font-size:0.9em;">正在跟隨</button>
+                    <div class="d-flex">
+                        <a class="nav-link" href="/privateChat/{{profileUser.id}}/with" style="color:black;"><i
+                                class="fa fa-envelope-o fa-2x" aria-hidden="true"></i></a>
+                        <button class="btn btn-lg btn-block fw-bolder mt-2" type="submit"
+                            style="color:white; background-color:#FF6103; border-radius: 25px; border: 1px solid white; width:150px; font-size:0.9em;">正在跟隨</button>
+                    </div>
                 </form>
                 {{else}}
                 <form action="/user/followship/{{profileUser.id}}" method="POST">
-                    <button class="btn btn-lg btn-block fw-bolder mt-2" type="submit"
-                        style="color:#FF6103; background-color:white; border-radius: 25px; border: 1px solid #FF6103; width:150px; font-size:0.9em;">跟隨</button>
+                    <div class="d-flex">
+                        <a class="nav-link" href="/privateChat/{{profileUser.id}}/with" style="color:black;"><i
+                                class="fa fa-envelope-o fa-2x" aria-hidden="true"></i></a>
+                        <button class="btn btn-lg btn-block fw-bolder mt-2" type="submit"
+                            style="color:#FF6103; background-color:white; border-radius: 25px; border: 1px solid #FF6103; width:150px; font-size:0.9em;">跟隨</button>
+                    </div>
                 </form>
                 {{/if}}
                 {{/ifcond}}

@@ -115,8 +115,9 @@ const chatController = {
     userId_1 = helpers.getUser(req).id
     userId_2 = req.params.id
 
-    const toId_avatar = await User.findByPk(req.params.id)
-      .then(user => user.dataValues.avatar)
+    const user_2 = await User.findByPk(req.params.id)
+    const toId_avatar = user_2.dataValues.avatar
+    const toId_name = user_2.dataValues.name
 
     talkers = await Message.findAll({
       where: { type: "0" },
@@ -135,7 +136,7 @@ const chatController = {
       talkers = talkers.sort((a, b) => a.dataValues.updatedAt - b.dataValues.updatedAt)
     }
 
-    res.render('privateChat', { OpenChat: true, ChatwithP: true, talkers, latestNew, userId_2, toId_avatar })
+    res.render('privateChat', { OpenChat: true, ChatwithP: true, talkers, latestNew, userId_2, toId_name, toId_avatar })
   },
 }
 
