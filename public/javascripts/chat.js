@@ -46,27 +46,29 @@ socket.on('update_loginUsers', function (object) {
 //發送聊天訊息
 $('#globalchat').submit(function (e) {
   e.preventDefault(); // prevents page reloading
-  const object = {
-    type: $('#type').val(),
-    body: $('#m').val(),
-    fromId: $('#id').val(),
-    toId: $('#toId').val(),
-    name: $('#name').val(),
-    avatar: $('#avatar').val()
+  if ($('#m').val() !== '') {
+    const object = {
+      type: $('#type').val(),
+      body: $('#m').val(),
+      fromId: $('#id').val(),
+      toId: $('#toId').val(),
+      name: $('#name').val(),
+      avatar: $('#avatar').val()
+    }
+    socket.emit('chat message', object);
+
+    $('#m').val('');
+
+    $(document).ready(function () {
+      $('.message').scrollTop($('#scroll_div')[0].scrollHeight);
+    });
+
+
+    if (object.toId !== "") {
+      socket.emit('push_to_other', object);
+    }
+    return false;
   }
-  socket.emit('chat message', object);
-
-  $('#m').val('');
-
-  $(document).ready(function () {
-    $('.message').scrollTop($('#scroll_div')[0].scrollHeight);
-  });
-
-
-  if (object.toId !== "") {
-    socket.emit('push_to_other', object);
-  }
-  return false;
 });
 
 //保存訊息在頁面上
@@ -80,13 +82,14 @@ $('#globalchat').submit(function (e) {
 
 //保存訊息在頁面上
 socket.on('chat message', function (object) {
-  msg = object.body
-  time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-  if (($('#id').val() === object.fromId && $('#toId').val() === object.toId) || ($('#id').val() === object.toId && $('#toId').val() === object.fromId) || object.toId === "") {
-    let message = document.getElementById('messages');
-    const div = document.createElement('div')
-    message.appendChild(div)
-    div.innerHTML = `<div class="d-flex justify-content-end">
+  if ($('#m').val() !== undefined) {
+    msg = object.body
+    time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+    if (($('#id').val() === object.fromId && $('#toId').val() === object.toId) || ($('#id').val() === object.toId && $('#toId').val() === object.fromId) || object.toId === "") {
+      let message = document.getElementById('messages');
+      const div = document.createElement('div')
+      message.appendChild(div)
+      div.innerHTML = `<div class="d-flex justify-content-end">
             <li class="user mb-2 " style="list-style-type:none">
               <div class="comment">
                 <div class="p-3 text-end" style="color:white; background-color:#FF6103; border-radius:8px">
@@ -95,8 +98,9 @@ socket.on('chat message', function (object) {
               <div class="time text-end small" style="color:#808A87">${time}</div>
             </li>
           </div>`
-    message.appendChild(div)
-    div.scrollIntoView(false)
+      message.appendChild(div)
+      div.scrollIntoView(false)
+    }
   }
 });
 
