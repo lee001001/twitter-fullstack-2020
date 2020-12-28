@@ -76,7 +76,7 @@ $('#globalchat').submit(function (e) {
 //保存訊息在頁面上
 socket.on('chat message', function (object) {
   msg = object.body
-  time = new Date().toLocaleTimeString()
+  time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
   if (($('#id').val() === object.fromId && $('#toId').val() === object.toId) || ($('#id').val() === object.toId && $('#toId').val() === object.fromId) || object.toId === "") {
     // $('#messages').append($('<li>').text(msg));
     $('#messages').append(`<div class="d-flex justify-content-end">
@@ -85,7 +85,7 @@ socket.on('chat message', function (object) {
                 <div class="p-3 text-end" style="color:white; background-color:#FF6103; border-radius:8px">
                   ${msg}</div>
               </div>
-              <div class="time text-end" style="color:#808A87">${time}</div>
+              <div class="time text-end small" style="color:#808A87">${time}</div>
             </li>
           </div>`);
   }

@@ -38,7 +38,7 @@ module.exports = {
   },
 
   time: function (a) {
-    return new Date(a).toLocaleTimeString()
+    return new Date(a).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
   },
 
   tc: function (a) {
