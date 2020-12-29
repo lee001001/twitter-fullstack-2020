@@ -103,6 +103,16 @@ socket.on('chat message', function (object) {
         <div class="time text-end small" style="color:#808A87">${time}</div>
       </li>
     </div>`;
+
+    // $('#messages').append(`<div class="d-flex justify-content-end">　
+    //         <li class="user mb-2 " style="list-style-type:none">
+    //           <div class="comment">
+    //             <div class="p-3 text-end" style="color:white; background-color:#FF6103; border-radius:8px">
+    //               ${msg}</div>
+    //           </div>
+    //           <div class="time text-end" style="color:#808A87"></div>
+    //         </li>
+    //       </div>`);
   }
   if ($('#id').val() === object.toId && $('#toId').val() === object.fromId) {
     let toId_avatar = $('#toId_avatar').val();
@@ -115,7 +125,9 @@ socket.on('chat message', function (object) {
                 <span>${msg}</span>
               </div>
             </div>
-            <div class="time small" style="color:#808A87">${time}</div>
+            <div class="time ms-5 mt-0">
+              <span class="ms-1 ps-2 mt-0 text-start small" style="color:#808A87">${time}</span>
+            </div>
           </li>`;
   }
   if ($('#global_userId').val() !== object.fromId && object.toId === "") {
@@ -128,7 +140,9 @@ socket.on('chat message', function (object) {
                 <span>${msg}</span>
               </div>
             </div>
-            <div class="time small" style="color:#808A87">${time}</div>
+            <div class="time ms-5 mt-0">
+              <span class="ms-1 ps-2 mt-0 text-start small" style="color:#808A87">${time}</span>
+            </div>
           </li>`;
   }
   message.appendChild(div)
@@ -188,3 +202,10 @@ socket.on('push_to_self', function (obj, toId_msgs, fromId_msgs) {
     // $('#latestNew').append("激發新對話框")
   }
 });
+
+$(window).scroll(function () {
+  last = $("body").height() - $(window).height()
+  if ($(window).scrollTop() >= last) {
+    $(".down").hide()
+  }
+}
