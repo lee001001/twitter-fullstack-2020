@@ -33,9 +33,16 @@
       {{/if}}
     </div>
     {{#if ChatwithP}}
+
+
+
+
+
     <div class="information d-flex flex-column justify-content-between py-2">
-      <div class=" message" id="chat-message" style="max-height:80vh; overflow-y: auto; overflow-x: hidden ;">
-        <ul id="messages">
+
+
+      <div class="message" id="chat-message" style="height:80vh; overflow-y:scroll; overflow-x: hidden ;">
+        <ul id="messages" class="d-flex flex-column justify-content-end">
           {{#each talkers}}
 
           {{#ifcond this.fromId.dataValues.id "===" ../user.id}}
@@ -46,7 +53,7 @@
                   {{this.dataValues.body}}</div>
               </div>
               <div class="time text-end small" style="color:#808A87">{{time
-                this.fromId.dataValues.createdAt}}
+                this.dataValues.createdAt}}
               </div>
             </li>
           </div>
@@ -63,7 +70,7 @@
             </div>
             <div class="time ms-5 mt-0">
               <span class="ms-1 ps-2 mt-0 text-start small" style="color:#808A87">{{time
-                this.fromId.dataValues.createdAt}}</span>
+                this.dataValues.createdAt}}</span>
 
             </div>
           </li>
@@ -71,6 +78,9 @@
           {{/each}}
         </ul>
       </div>
+
+
+
       <div class="sendMessage" style="border-top: 1px solid #C0C0C0">
         <form action="" id="globalchat" class="mt-2">
           <div class="row  d-flex justify-content-between">
@@ -91,6 +101,8 @@
         </form>
       </div>
     </div>
+
+
     {{/if}}
   </div>
 </div>
