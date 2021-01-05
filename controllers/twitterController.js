@@ -15,22 +15,19 @@ const twitterController = {
     if (req.query.page) {
       offset = (Number(req.query.page) - 1) * pageLimit
     }
-
-    Promise.all([
-      Tweet.count(),
-      Tweet.findAll({
-        include: [User, { model: Like }, { model: Reply, include: [User] }],
-        order: [['createdAt', 'DESC']],
-        offset: offset,
-        limit: pageLimit
-      })
-    ]).then(([count, result]) => {
+    Tweet.findAndCountAll({
+      include: [User, { model: Like }, { model: Reply, include: [User] }],
+      order: [['createdAt', 'DESC']],
+      offset: offset,
+      limit: pageLimit,
+      distinct: true
+    }).then(result => {
       const page = Number(req.query.page) || 1
-      const pages = Math.ceil(count / pageLimit)
+      const pages = Math.ceil(result.count / pageLimit)
       const totalPages = Array.from({ length: pages }).map((item, index) => index + 1)
       const prev = page - 1 <= 0 ? 1 : page - 1
       const next = page + 1 > pages ? pages : page + 1
-      const tweets = result.map(t => ({
+      const tweets = result.rows.map(t => ({
         ...t.dataValues,
         description: t.dataValues.description.substring(0, 50),
         User: t.User.dataValues,
@@ -40,6 +37,31 @@ const twitterController = {
       }))
       return res.render('tweets', { tweets, totalPages, prev, next, page })
     })
+
+    // Promise.all([
+    //   Tweet.count(),
+    //   Tweet.findAll({
+    //     include: [User, { model: Like }, { model: Reply, include: [User] }],
+    //     order: [['createdAt', 'DESC']],
+    //     offset: offset,
+    //     limit: pageLimit
+    //   })
+    // ]).then(([count, result]) => {
+    //   const page = Number(req.query.page) || 1
+    //   const pages = Math.ceil(count / pageLimit)
+    //   const totalPages = Array.from({ length: pages }).map((item, index) => index + 1)
+    //   const prev = page - 1 <= 0 ? 1 : page - 1
+    //   const next = page + 1 > pages ? pages : page + 1
+    //   const tweets = result.map(t => ({
+    //     ...t.dataValues,
+    //     description: t.dataValues.description.substring(0, 50),
+    //     User: t.User.dataValues,
+    //     replies: t.Replies,
+    //     tweetLiked: t.Likes.filter(like => like.likeOrNot === true).length,
+    //     tweetDisliked: t.Likes.filter(like => like.likeOrNot === false).length
+    //   }))
+    //   return res.render('tweets', { tweets, totalPages, prev, next, page })
+    // })
   },
 
   createTwitters: (req, res, next) => {

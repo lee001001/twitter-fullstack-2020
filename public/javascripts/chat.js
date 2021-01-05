@@ -19,31 +19,8 @@ socket.on('update_loginUsers', function (object) {
   $('#onlineUsers').empty().append(`<h5>上線使用者 (${object.length})</h5>`);
 });
 
-//更新目前線上使用者
-// socket.on('update_loginUsers', function (object) {
-//   let text = `
-//     <div class="row my-0 py-3" style="border-bottom: 1px solid #C0C0C0">
-//       <h6>上線使用者 (${object.length})</h6>
-//     </div>
-//   `
-//   for (let obj of object) {
-//     text = text + `123
-//     <div class="row my-0 py-3" style="border-bottom: 1px solid #C0C0C0">
-//       <div class="d-flex mx-auto">
-//         <a class="mx-2" href="/user/${obj.id}">
-//           <img src="${obj.avatar}" alt="" style="height: 40px; width: 40px; border-radius: 50%;">
-//         </a>
-//         <h6 class="fw-bolder" style="margin:0;">${obj.name}$</h6>
-//         <h6 style="margin:0; color:#A39480;">${obj.email}$</h6>
-//       </div>
-//       <h6 style="margin:0; color:#A39480;">${obj.logintimeAt}$</h6>
-//     </div>
-//     `
-//   };
-//   $('#global_loginuser').innerHTML = text
-// });
 
-//發送聊天訊息
+//監聽到資料send 並把資料傳到後端
 $('#globalchat').submit(function (e) {
   e.preventDefault(); // prevents page reloading
   if ($('#m').val() !== '') {
@@ -88,7 +65,6 @@ socket.on('chat message', function (object) {
     if (($('#id').val() === object.fromId && $('#toId').val() === object.toId) || ($('#id').val() === object.toId && $('#toId').val() === object.fromId) || object.toId === "") {
       let message = document.getElementById('messages');
       const div = document.createElement('div')
-      message.appendChild(div)
       div.innerHTML = `<div class="d-flex justify-content-end">
             <li class="user mb-2 " style="list-style-type:none">
               <div class="comment">
@@ -139,5 +115,52 @@ $(window).scroll(function () {
     $(".down").hide()
   }
 })
+
+//私聊
+$('#privateRoom').submit(function (e) {
+  e.preventDefault(); // prevents page reloading
+  if ($('#m').val() !== '') {
+    const object = {
+      type: $('#type').val(),
+      body: $('#m').val(),
+      fromId: $('#id').val(),
+      toId: $('#toId').val(),
+      name: $('#name').val(),
+      avatar: $('#avatar').val()
+    }
+    socket.emit('private message', object);
+
+    $('#m').val('');
+
+    return false;
+  }
+});
+
+//接到後端傳來的資料
+socket.on('private message', function (obj) {
+  if ($('#m').val() !== undefined) {
+    msg = object.body
+    time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+    // if (($('#id').val() === object.fromId && $('#toId').val() === object.toId) || ($('#id').val() === object.toId && $('#toId').val() === object.fromId) || object.toId === "") {
+    let privateMessages = document.getElementById('privateMessages');
+    const div = document.createElement('div')
+    privateMessages.appendChild(div)
+    div.innerHTML = `<div class="d-flex justify-content-end">
+            <li class="user mb-2 " style="list-style-type:none">
+              <div class="comment">
+                <div class="p-3 text-end" style="color:white; background-color:#FF6103; border-radius:8px">
+                  ${msg}</div>
+              </div>
+              <div class="time text-end small" style="color:#808A87">${time}</div>
+            </li>
+          </div>`
+    privateMessages.appendChild(div)
+    div.scrollIntoView(false)
+    // }
+  }
+
+
+})
+
 
 

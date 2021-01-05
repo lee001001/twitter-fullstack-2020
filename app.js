@@ -33,7 +33,7 @@ app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
-
+const { beSigned } = require('./middleware/check-auth')
 let userinfo = null
 // flash words in global
 app.use((req, res, next) => {
@@ -130,6 +130,32 @@ io.on('connection', (socket) => {
 
 
     // io.emit('push_to_other', msg, roomName);
+
+  })
+
+  //私聊
+  socket.on('private message', (obj) => {
+    console.log('==============')
+    console.log(obj)
+    const FromId = Number(obj.fromId)
+    const ToId = Number(obj.toId)
+    //寫進資料庫
+    Message.create({
+      type: obj.type,
+      body: obj.body,
+      FromId: FromId,
+      ToId: ToId
+    })
+    //判斷是哪一個房間，並將資料傳進去該房間
+    console.log('socket.id', socket.id)
+
+    const userId = fetchUserId(socket);
+    console.log('userId', userId)
+
+
+    // socket.join(roomName)
+
+    // io.to(roomName).emit(obj)
 
   })
 

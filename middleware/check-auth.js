@@ -1,12 +1,13 @@
 const helpers = require('../_helpers')
 const db = require('../models')
 const { User } = db
-
+let allowAccessed = false
 module.exports = {
   authenticatedUser: async (req, res, next) => {
     if (helpers.ensureAuthenticated(req)) {
       const role = helpers.getUser(req).role || ""
       if (role === "") {
+        allowAccessed = true
         update = await User.findByPk(helpers.getUser(req).id)
           .then(user => {
             return user.update({
@@ -16,23 +17,33 @@ module.exports = {
           })
         return next()
       }
-      req.flash('error_messages', '管理者帳號後台登入')
-      return res.redirect('/admin/tweets')
+      allowAccessed = false
+      // req.flash('error_messages', '管理者帳號後台登入')
+      // return res.redirect('/admin/tweets')
     }
     return res.redirect('/signin')
   },
 
   authenticatedAdmin: (req, res, next) => {
+
     if (helpers.ensureAuthenticated(req)) {
-      if (helpers.getUser(req).role === 'admin') { return next() }
-      req.flash('error_messages', '使用者帳號前台登入')
-      return res.redirect('/tweets')
+      if (helpers.getUser(req).role === 'admin') {
+        allowAccessed = true
+        return next()
+      }
+      allowAccessed = false
+      // req.flash('error_messages', '使用者帳號前台登入')
+      // return res.redirect('/tweets')
     }
     return res.redirect('/admin/signin')
   },
 
   beSigned: (req, res, next) => {
-    if (helpers.getUser(req)) {
+    if (!allowAccessed) {
+      req.flash('error_messages', '無權訪問該頁面')
+      return res.redirect('back')
+    }
+    else if (helpers.getUser(req)) {
       if (helpers.getUser(req).role === 'admin') {
         return res.redirect('/admin/tweets')
       } else {

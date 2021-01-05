@@ -68,6 +68,10 @@ const chatController = {
     }
     res.render('privateChat', { OpenChat: true, talkers, userId_2 })
   },
+
+  getPrivate: (req, res) => {
+    res.render('privateRoom')
+  }
 }
 
 module.exports = chatController
