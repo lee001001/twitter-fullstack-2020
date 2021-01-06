@@ -18,8 +18,8 @@ const user = require('../models/user.js')
 /// ////
 // admin
 /// ////
-router.get('/admin/signin', adminController.signinPage)
-router.post('/admin/signin', passport.authenticate('local', { failureRedirect: '/admin/signin', failureFlash: true }), authenticatedAdmin, adminController.signin)
+router.get('/admin/signin', beSigned, adminController.signinPage)
+router.post('/admin/signin', beSigned, passport.authenticate('local', { failureRedirect: '/admin/signin', failureFlash: true }), authenticatedAdmin, adminController.signin)
 router.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
 router.delete('/admin/tweets/:id', authenticatedAdmin, adminController.deleteTweet)
 router.get('/admin/users', authenticatedAdmin, adminController.getUsers)
@@ -29,10 +29,10 @@ router.get('/admin/users', authenticatedAdmin, adminController.getUsers)
 /// ////
 // router.get('/', (req, res) => res.render('/personChat'))
 router.get('/', (req, res) => res.redirect('/signup'))
-router.get('/signup', userController.signUpPage)
-router.post('/signup', userController.signUp)
-router.get('/signin', userController.signInPage)
-router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), authenticatedUser, userController.signIn)
+router.get('/signup', beSigned, userController.signUpPage)
+router.post('/signup', beSigned, userController.signUp)
+router.get('/signin', beSigned, userController.signInPage)
+router.post('/signin', beSigned, passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), authenticatedUser, userController.signIn)
 router.get('/logout', userController.logout)
 
 router.get('/user/setting', authenticatedUser, userController.getSetting)
